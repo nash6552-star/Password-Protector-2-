@@ -1,0 +1,1499 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>
+        
+        Secure Notes Manager
+    
+    </title>
+
+    <style>
+
+        * {
+    
+            margin: 0;
+    
+            padding: 0;
+    
+            box-sizing: border-box;
+    
+            font-family: Arial, sans-serif;
+    
+        }
+
+        body {
+    
+            min-height: 100vh;
+    
+            background: #101b2d;
+    
+            color: white;
+        }
+
+        /* Login Screen */
+
+        .auth-container {
+    
+            min-height: 100vh;
+    
+            display: flex;
+    
+            justify-content: center;
+    
+            align-items: center;
+    
+            padding: 20px;
+    
+        }
+
+        .auth-box {
+    
+            background: #1c2d45;
+    
+            padding: 35px;
+    
+            width: 100%;
+    
+            max-width: 400px;
+    
+            border-radius: 15px;
+    
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+    
+            text-align: center;
+    
+        }
+
+        .auth-box h1 {
+    
+            color: #38bdf8;
+    
+            margin-bottom: 10px;
+    
+        }
+
+        .auth-box p {
+    
+            color: #a8b8cc;
+    
+            margin-bottom: 25px;
+    
+        }
+
+        input, textarea {
+    
+            width: 100%;
+    
+            padding: 13px;
+    
+            border-radius: 7px;
+    
+            border: 1px solid #45617f;
+    
+            background: #101b2d;
+    
+            color: white;
+    
+            outline: none;
+    
+            font-size: 14px;
+        
+        }
+
+        input:focus, textarea:focus {
+
+            border-color: #38bdf8;
+
+        }
+
+        .auth-box input {
+
+            margin-bottom: 15px;
+
+        }
+
+        button {
+
+            cursor: pointer;
+
+            border: none;
+
+            border-radius: 7px;
+
+            transition: 0.3s;
+
+        }
+
+        .primary-btn {
+
+            width: 100%;
+
+            padding: 13px;
+
+            background: #0284c7;
+
+            color: white;
+
+            font-weight: bold;
+
+        }
+
+        .primary-btn:hover {
+
+            background: #0369a1;
+
+        }
+
+        .switch {
+
+            margin-top: 20px;
+
+            color: #38bdf8;
+
+            cursor: pointer;
+
+            font-size: 14px;
+
+        }
+
+        .error {
+
+            color: #f87171;
+
+            margin-top: 12px;
+
+            font-size: 13px;
+
+        }
+
+        .success {
+
+            color: #4ade80;
+
+            margin-top: 12px;
+
+            font-size: 13px;
+
+        }
+
+        /* Main Application */
+
+        #app {
+
+            display: none;
+
+        }
+
+        header {
+
+            background: #172940;
+
+            padding: 20px 30px;
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            gap: 15px;
+
+            flex-wrap: wrap;
+
+        }
+
+        header h1 {
+
+            color: #38bdf8;
+
+        }
+
+        .header-buttons {
+
+            display: flex;
+
+            gap: 10px;
+
+        }
+
+        .lock-btn {
+
+            padding: 10px 16px;
+
+            background: #eab308;
+
+            color: #172033;
+
+            font-weight: bold;
+
+        }
+
+        .logout-btn {
+
+            padding: 10px 16px;
+
+            background: #dc2626;
+
+            color: white;
+
+        }
+
+        /* Main Layout */
+
+        .main-container {
+
+            max-width: 1200px;
+
+            margin: auto;
+
+            padding: 30px;
+
+        }
+
+        .top-section {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            flex-wrap: wrap;
+
+            gap: 15px;
+
+            margin-bottom: 25px;
+
+        }
+
+        .top-section h2 {
+
+            color: #f8fafc;
+
+        }
+
+        .create-btn {
+
+            padding: 12px 18px;
+
+            background: #0284c7;
+
+            color: white;
+
+            font-weight: bold;
+
+        }
+
+        .search-box {
+
+            margin-bottom: 25px;
+
+        }
+
+        /* Notes Grid */
+
+        .notes-grid {
+
+            display: grid;
+
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+
+            gap: 20px;
+
+        }
+
+        .note-card {
+
+            background: #1c304b;
+
+            padding: 20px;
+
+            border-radius: 12px;
+
+            border-left: 4px solid #38bdf8;
+
+            min-height: 180px;
+
+            display: flex;
+
+            flex-direction: column;
+
+            justify-content: space-between;
+
+            overflow-wrap: anywhere;
+
+        }
+
+        .note-card h3 {
+
+            color: #38bdf8;
+
+            margin-bottom: 12px;
+
+        }
+
+        .note-card p {
+
+            color: #cbd5e1;
+
+            line-height: 1.6;
+
+            white-space: pre-wrap;
+
+            margin-bottom: 20px;
+
+        }
+
+        .note-date {
+
+            color: #8296ae;
+
+            font-size: 11px;
+
+            margin-bottom: 12px;
+
+        }
+
+        .note-actions {
+
+            display: flex;
+
+            gap: 10px;
+
+        }
+
+        .edit-btn {
+
+            background: #eab308;
+
+            color: #172033;
+
+            padding: 8px 14px;
+
+        }
+
+        .delete-btn {
+
+            background: #dc2626;
+
+            color: white;
+
+            padding: 8px 14px;
+
+        }
+
+        /* Note Editor */
+
+        .modal {
+
+            display: none;
+
+            position: fixed;
+
+            inset: 0;
+
+            background: rgba(0,0,0,0.75);
+
+            justify-content: center;
+
+            align-items: center;
+
+            padding: 20px;
+
+            z-index: 10;
+
+        }
+
+        .modal-box {
+
+            background: #1c2d45;
+
+            width: 100%;
+
+            max-width: 500px;
+
+            padding: 25px;
+
+            border-radius: 12px;
+
+        }
+
+        .modal-box h2 {
+
+            color: #38bdf8;
+
+            margin-bottom: 20px;
+
+        }
+
+        .modal-box input,
+
+        .modal-box textarea {
+
+            margin-bottom: 15px;
+
+        }
+
+        .modal-box textarea {
+
+            height: 200px;
+
+            resize: vertical;
+
+        }
+
+        .modal-actions {
+
+            display: flex;
+
+            gap: 10px;
+
+        }
+
+        .save-btn {
+
+            flex: 1;
+
+            padding: 12px;
+
+            background: #0284c7;
+
+            color: white;
+
+        }
+
+        .cancel-btn {
+
+            flex: 1;
+
+            padding: 12px;
+
+            background: #475569;
+
+            color: white;
+
+        }
+
+        .empty {
+
+            grid-column: 1 / -1;
+
+            text-align: center;
+
+            color: #94a3b8;
+
+            padding: 60px 10px;
+
+        }
+
+        footer {
+
+            text-align: center;
+
+            padding: 20px;
+
+            color: #8296ae;
+
+            font-size: 12px;
+
+        }
+
+        @media(max-width: 600px) {
+
+            header {
+
+                padding: 20px;
+
+            }
+
+            .main-container {
+
+                padding: 20px;
+
+            }
+
+            .header-buttons {
+
+                width: 100%;
+
+            }
+
+            .header-buttons button {
+
+                flex: 1;
+
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <!-- AUTHENTICATION SCREEN -->
+
+    <section class="auth-container" id="authScreen">
+
+        <div class="auth-box">
+
+            <h1>
+                
+                🔐 Secure Notes
+            
+            </h1>
+
+            <p id="authDescription">
+            
+                Create your private notes account.
+            
+            </p>
+
+            <input
+                type="password"
+                id="password"
+                placeholder="Enter password"
+                autocomplete="current-password"
+            >
+
+            <input
+                type="password"
+                id="confirmPassword"
+                placeholder="Confirm password"
+                autocomplete="new-password"
+                style="display:none"
+            >
+
+            <button class="primary-btn" id="authButton"
+                onclick="authenticate()">
+                
+                Create Account
+            
+            </button>
+
+            <p class="switch" id="switchText"
+                onclick="toggleAuth()">
+            
+                Already registered? Login
+            
+            </p>
+
+            <p id="authMessage">
+
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <!-- MAIN APPLICATION -->
+
+    <div id="app">
+
+        <header>
+
+            <h1>
+                
+                🔐 My Private Notes
+            
+            </h1>
+
+            <div class="header-buttons">
+
+                <button class="lock-btn" onclick="lockApp()">
+                 
+                    🔒 Lock
+                
+                </button>
+
+                <button class="logout-btn" onclick="logout()">
+                
+                    Logout
+                
+                </button>
+
+            </div>
+
+        </header>
+
+        <main class="main-container">
+
+            <div class="top-section">
+
+                <h2>
+                    
+                    My Notes
+                
+                </h2>
+
+                <button class="create-btn" onclick="openEditor()">
+                
+                    + Create Note
+                
+                </button>
+
+            </div>
+
+            <div class="search-box">
+
+                <input
+                    type="text"
+                    id="searchInput"
+                    placeholder="🔍 Search your notes..."
+                    oninput="renderNotes()"
+                >
+
+            </div>
+
+            <div class="notes-grid" id="notesGrid"></div>
+
+        </main>
+
+        <footer>
+
+            Your privacy matters. Notes are encrypted before storage.
+
+        </footer>
+
+    </div>
+
+    <!-- NOTE EDITOR MODAL -->
+
+    <div class="modal" id="noteModal">
+
+        <div class="modal-box">
+
+            <h2 id="modalTitle">
+                
+                Create New Note
+            
+            </h2>
+
+            <input
+                type="text"
+                id="noteTitle"
+                placeholder="Note title"
+                maxlength="100"
+            >
+
+            <textarea
+                id="noteContent"
+                placeholder="Write your private note here..."
+            >
+        
+            </textarea>
+
+            <div class="modal-actions">
+
+                <button class="save-btn" onclick="saveNote()">
+            
+                    Save Note
+            
+                </button>
+
+                <button class="cancel-btn" onclick="closeEditor()">
+            
+                    Cancel
+            
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <script>
+
+        // APPLICATION DATA
+
+        const STORAGE_KEY = "secureNotesData";
+
+        const PBKDF2_ITERATIONS = 600000;
+
+        let currentKey = null;
+
+        let notes = [];
+
+        let editingId = null;
+
+        let isRegistering = false;
+
+        // BASE64 UTILITIES
+
+        function toBase64(buffer) {
+
+            const bytes = new Uint8Array(buffer);
+
+            let binary = "";
+
+            bytes.forEach(byte => {
+                binary += String.fromCharCode(byte);
+            });
+
+            return btoa(binary);
+
+        }
+
+        function fromBase64(value) {
+
+            const binary = atob(value);
+
+            const bytes = new Uint8Array(binary.length);
+
+            for (let i = 0; i < binary.length; i++) {
+
+                bytes[i] = binary.charCodeAt(i);
+
+            }
+
+            return bytes;
+
+        }
+
+        // PASSWORD KEY DERIVATION
+
+        async function deriveKey(password, salt) {
+
+            const encoder = new TextEncoder();
+
+            const keyMaterial = await crypto.subtle.importKey(
+                "raw",
+                encoder.encode(password),
+                "PBKDF2",
+                false,
+                ["deriveKey"]
+            );
+
+            return await crypto.subtle.deriveKey(
+
+                {
+                    name: "PBKDF2",
+                    salt: salt,
+                    iterations: PBKDF2_ITERATIONS,
+                    hash: "SHA-256"
+                },
+
+                keyMaterial,
+
+                {
+                    name: "AES-GCM",
+                    length: 256
+                },
+
+                false,
+
+                ["encrypt", "decrypt"]
+
+            );
+
+        }
+
+        // ENCRYPT DATA
+
+        async function encryptData(data) {
+
+            const iv = crypto.getRandomValues(
+                new Uint8Array(12)
+            );
+
+            const encoder = new TextEncoder();
+
+            const encrypted = await crypto.subtle.encrypt(
+
+                {
+                    name: "AES-GCM",
+                    iv: iv
+                },
+
+                currentKey,
+
+                encoder.encode(JSON.stringify(data))
+
+            );
+
+            return {
+
+                iv: toBase64(iv),
+
+                ciphertext: toBase64(encrypted)
+
+            };
+
+        }
+
+        // DECRYPT DATA
+
+        async function decryptData(data) {
+
+            const decrypted = await crypto.subtle.decrypt(
+
+                {
+                    name: "AES-GCM",
+                    iv: fromBase64(data.iv)
+                },
+
+                currentKey,
+
+                fromBase64(data.ciphertext)
+
+            );
+
+            const decoder = new TextDecoder();
+
+            return JSON.parse(decoder.decode(decrypted));
+
+        }
+
+        // GET STORAGE DATA
+
+        function getStorage() {
+
+            try {
+
+                const data = localStorage.getItem(STORAGE_KEY);
+
+                return data ? JSON.parse(data) : null;
+
+            } catch {
+
+                throw new Error("Stored data is corrupted.");
+
+            }
+
+        }
+
+        // AUTHENTICATION MODE
+
+        function toggleAuth() {
+
+            isRegistering = !isRegistering;
+
+            document.getElementById("authDescription").textContent =
+                isRegistering
+                ? "Create a strong password for your notes."
+                : "Enter your password to access your notes.";
+
+            document.getElementById("authButton").textContent =
+                isRegistering ? "Create Account" : "Login";
+
+            document.getElementById("confirmPassword").style.display =
+                isRegistering ? "block" : "none";
+
+            document.getElementById("switchText").textContent =
+                isRegistering
+                ? "Already registered? Login"
+                : "New user? Create an account";
+
+            document.getElementById("password").value = "";
+
+            document.getElementById("confirmPassword").value = "";
+
+            document.getElementById("authMessage").textContent = "";
+
+        }
+
+        // REGISTER / LOGIN
+
+        async function authenticate() {
+
+            const password =
+                document.getElementById("password").value;
+
+            const confirmPassword =
+                document.getElementById("confirmPassword").value;
+
+            const message =
+                document.getElementById("authMessage");
+
+            const button =
+                document.getElementById("authButton");
+
+            if (!password) {
+
+                message.className = "error";
+
+                message.textContent = "Please enter a password.";
+
+                return;
+
+            }
+
+            if (isRegistering) {
+
+                if (password.length < 8) {
+
+                    message.className = "error";
+
+                    message.textContent =
+                        "Password must contain at least 8 characters.";
+
+                    return;
+
+                }
+
+                if (password !== confirmPassword) {
+
+                    message.className = "error";
+
+                    message.textContent = "Passwords do not match.";
+
+                    return;
+
+                }
+
+            }
+
+            button.disabled = true;
+
+            button.textContent = "Please wait...";
+
+            try {
+
+                const storage = getStorage();
+
+                if (isRegistering) {
+
+                    if (storage) {
+
+                        throw new Error(
+                            "An account already exists. Please login."
+                        );
+
+                    }
+
+                    const salt = crypto.getRandomValues(
+                        new Uint8Array(16)
+                    );
+
+                    currentKey = await deriveKey(password, salt);
+
+                    notes = [];
+
+                    const verification = await encryptData({
+                        purpose: "password-check"
+                    });
+
+                    localStorage.setItem(
+
+                        STORAGE_KEY,
+
+                        JSON.stringify({
+
+                            version: 1,
+
+                            salt: toBase64(salt),
+
+                            verification: verification,
+
+                            notes: []
+
+                        })
+
+                    );
+
+                } else {
+
+                    if (!storage) {
+
+                        throw new Error(
+                            "No account found. Please create an account."
+                        );
+
+                    }
+
+                    if (
+                        storage.version !== 1 ||
+                        !storage.salt ||
+                        !storage.verification ||
+                        !Array.isArray(storage.notes)
+                    ) {
+
+                        throw new Error("Invalid account data.");
+
+                    }
+
+                    const salt = fromBase64(storage.salt);
+
+                    currentKey = await deriveKey(password, salt);
+
+                    // Verify password
+
+                    const check = await decryptData(
+                        storage.verification
+                    );
+
+                    if (check.purpose !== "password-check") {
+
+                        throw new Error("Invalid password.");
+
+                    }
+
+                    // Decrypt saved notes
+
+                    notes = [];
+
+                    for (const encryptedNote of storage.notes) {
+
+                        notes.push(
+                            await decryptData(encryptedNote)
+                        );
+
+                    }
+
+                }
+
+                showApp();
+
+            } catch (error) {
+
+                currentKey = null;
+
+                notes = [];
+
+                message.className = "error";
+
+                message.textContent =
+                    error.name === "OperationError"
+                    ? "Incorrect password or corrupted data."
+                    : error.message;
+
+            } finally {
+
+                button.disabled = false;
+
+                button.textContent =
+                    isRegistering ? "Create Account" : "Login";
+
+            }
+
+        }
+
+        // SHOW APPLICATION
+
+        function showApp() {
+
+            document.getElementById("authScreen").style.display =
+                "none";
+
+            document.getElementById("app").style.display =
+                "block";
+
+            document.getElementById("password").value = "";
+
+            document.getElementById("confirmPassword").value = "";
+
+            isRegistering = false;
+
+            document.getElementById("authDescription").textContent =
+                "Create your private notes account.";
+
+            document.getElementById("authButton").textContent =
+                "Create Account";
+
+            document.getElementById("confirmPassword").style.display =
+                "none";
+
+            document.getElementById("switchText").textContent =
+                "Already registered? Login";
+
+            renderNotes();
+
+        }
+
+        // SAVE ENCRYPTED NOTES
+
+        async function persistNotes() {
+
+            const storage = getStorage();
+
+            if (!storage || !currentKey) {
+
+                throw new Error("Application is locked.");
+
+            }
+
+            const encryptedNotes = [];
+
+            for (const note of notes) {
+
+                encryptedNotes.push(
+                    await encryptData(note)
+                );
+
+            }
+
+            const updatedStorage = {
+
+                version: 1,
+
+                salt: storage.salt,
+
+                verification: storage.verification,
+
+                notes: encryptedNotes
+
+            };
+
+            localStorage.setItem(
+                STORAGE_KEY,
+                JSON.stringify(updatedStorage)
+            );
+
+        }
+
+        // CREATE / EDIT NOTE
+
+        function openEditor(id = null) {
+
+            editingId = id;
+
+            const titleInput =
+                document.getElementById("noteTitle");
+
+            const contentInput =
+                document.getElementById("noteContent");
+
+            if (id !== null) {
+
+                const note = notes.find(n => n.id === id);
+
+                titleInput.value = note.title;
+
+                contentInput.value = note.content;
+
+                document.getElementById("modalTitle").textContent =
+                    "Edit Note";
+
+            } else {
+
+                titleInput.value = "";
+
+                contentInput.value = "";
+
+                document.getElementById("modalTitle").textContent =
+                    "Create New Note";
+
+            }
+
+            document.getElementById("noteModal").style.display =
+                "flex";
+
+            titleInput.focus();
+
+        }
+
+
+        function closeEditor() {
+
+            document.getElementById("noteModal").style.display =
+                "none";
+
+        }
+
+
+        // SAVE NOTE
+
+        async function saveNote() {
+
+            const title =
+                document.getElementById("noteTitle").value.trim();
+
+            const content =
+                document.getElementById("noteContent").value.trim();
+
+            if (!title || !content) {
+
+                alert("Please enter both title and content.");
+
+                return;
+
+            }
+
+            const oldNotes = structuredClone(notes);
+
+            if (editingId !== null) {
+
+                const note = notes.find(n => n.id === editingId);
+
+                note.title = title;
+
+                note.content = content;
+
+                note.updatedAt = new Date().toLocaleString();
+
+            } else {
+
+                notes.push({
+
+                    id: crypto.randomUUID(),
+
+                    title: title,
+
+                    content: content,
+
+                    createdAt: new Date().toLocaleString(),
+
+                    updatedAt: null
+
+                });
+
+            }
+
+            try {
+
+                await persistNotes();
+
+                closeEditor();
+
+                renderNotes();
+
+            } catch (error) {
+
+                notes = oldNotes;
+
+                alert("Unable to save note: " + error.message);
+
+            }
+
+        }
+
+        // DISPLAY NOTES
+
+        function renderNotes() {
+
+            const grid = document.getElementById("notesGrid");
+
+            grid.innerHTML = "";
+
+            const search = document
+                .getElementById("searchInput")
+                .value.toLowerCase();
+
+            const filteredNotes = notes.filter(note =>
+
+                note.title.toLowerCase().includes(search) ||
+
+                note.content.toLowerCase().includes(search)
+
+            );
+
+            if (filteredNotes.length === 0) {
+
+                const empty = document.createElement("div");
+
+                empty.className = "empty";
+
+                empty.textContent = notes.length === 0
+                    ? "No private notes yet. Create your first note!"
+                    : "No matching notes found.";
+
+                grid.appendChild(empty);
+
+                return;
+
+            }
+
+            filteredNotes.forEach(note => {
+
+                const card = document.createElement("div");
+
+                card.className = "note-card";
+
+                const title = document.createElement("h3");
+
+                title.textContent = note.title;
+
+                const content = document.createElement("p");
+
+                content.textContent = note.content;
+
+                const date = document.createElement("div");
+
+                date.className = "note-date";
+
+                date.textContent =
+                    
+                    "Created: " + note.createdAt +
+                    
+                    (note.updatedAt
+                    
+                        ? " | Updated: " + note.updatedAt
+                        
+                        : "");
+
+                const actions = document.createElement("div");
+
+                actions.className = "note-actions";
+
+                const edit = document.createElement("button");
+
+                edit.className = "edit-btn";
+
+                edit.textContent = "Edit";
+
+                edit.onclick = () => openEditor(note.id);
+
+                const remove = document.createElement("button");
+
+                remove.className = "delete-btn";
+
+                remove.textContent = "Delete";
+
+                remove.onclick = () => deleteNote(note.id);
+
+                actions.appendChild(edit);
+
+                actions.appendChild(remove);
+
+                card.appendChild(title);
+
+                card.appendChild(content);
+
+                card.appendChild(date);
+
+                card.appendChild(actions);
+
+                grid.appendChild(card);
+
+            }
+        
+        );
+
+        }
+
+        // DELETE NOTE
+
+        async function deleteNote(id) {
+
+            if (!confirm("Permanently delete this note?")) {
+
+                return;
+
+            }
+
+            const oldNotes = structuredClone(notes);
+
+            notes = notes.filter(note => note.id !== id);
+
+            try {
+
+                await persistNotes();
+
+                renderNotes();
+
+            } catch (error) {
+
+                notes = oldNotes;
+
+                alert("Unable to delete note: " + error.message);
+
+            }
+
+        }
+
+        // LOCK APPLICATION
+
+        function lockApp() {
+
+            currentKey = null;
+
+            notes = [];
+
+            document.getElementById("app").style.display = "none";
+
+            document.getElementById("authScreen").style.display = "flex";
+
+            document.getElementById("authMessage").textContent =
+                "Application locked successfully.";
+
+            document.getElementById("authMessage").className = "success";
+
+            if (isRegistering) {
+
+                toggleAuth();
+
+            }
+
+        }
+
+        // LOGOUT
+
+        function logout() {
+
+            lockApp();
+
+            document.getElementById("authMessage").textContent =
+                "You have been logged out.";
+
+        }
+
+        // AUTOMATIC LOCK WHEN TAB IS HIDDEN
+
+        document.addEventListener("visibilitychange", function() {
+
+            if (document.hidden && currentKey) {
+
+                lockApp();
+
+            }
+
+        });
+
+        // ENTER KEY LOGIN
+
+        document.getElementById("password")
+            .addEventListener("keydown", function(event) {
+
+                if (event.key === "Enter") {
+
+                    authenticate();
+
+                }
+
+            });
+
+        // INITIAL PAGE SETUP
+
+        try {
+
+            const existingAccount = getStorage();
+
+            if (existingAccount) {
+
+                isRegistering = false;
+
+                document.getElementById("authDescription").textContent =
+                    "Enter your password to access your notes.";
+
+                document.getElementById("authButton").textContent =
+                    "Login";
+
+                document.getElementById("switchText").textContent =
+                    "New user? Create an account";
+
+            }
+
+        } catch (error) {
+
+            document.getElementById("authMessage").textContent =
+                error.message;
+
+            document.getElementById("authMessage").className = "error";
+
+        }
+
+    </script>
+
+</body>
+
+</html>
